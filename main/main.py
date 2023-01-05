@@ -1,6 +1,10 @@
 from collections import defaultdict
+from os import path
 from collections import namedtuple
+import argparse
 from typing import Any
+from typing import List
+from typing import Optional
 from typing import Tuple
 
 Team = namedtuple("Team", "name points")
@@ -63,18 +67,68 @@ def league_rankings(teams_with_points: dict) -> str:
     return ranks
 
 
+def write_output(output: str, to_file: Optional[str], to_stdout: Optional[str]):
+    def write_to_file(filename, contents):
+        with open(filename, "w") as f:
+            f.write(contents)
+
+    if to_file and to_stdout:
+        print(output)
+        write_to_file(to_file, output)
+    elif to_file and not to_stdout:
+        write_to_file(to_file, output)
+    elif not to_file and to_stdout:
+        print(output)
+    else:
+        raise ValueError("Specify at least one output target")
+
+
+def get_input(from_file: Optional[str], from_stdin: Optional[str]) -> List[str]:
+    if from_file and from_stdin:
+        # just get from stdin
+        return from_stdin.split("|")
+    elif from_file and not from_stdin:
+        contents = []
+        with open(from_file) as f:
+            for line in f.readlines():
+                contents.append(line)
+        return contents
+    elif not from_file and from_stdin:
+        return from_stdin.split("|")
+    else:
+        raise ValueError("Specify at least one input source")
+
+
+def _cmd_args():
+    global args
+    parser = argparse.ArgumentParser(description="This program accepts results of games either "
+                                                 "as stdin or filename and outputs the league "
+                                                 "rankings either to stdout or file")
+    parser.add_argument("--fileinput", help="Input file containing the game results")
+    parser.add_argument("--cmdinput", help="Receive results from stdin")
+    parser.add_argument("--fileoutput", help="Output file containing the league rankings")
+    parser.add_argument("--cmdoutput", help="Print rankings to stdout", action="store_true")
+
+    return parser.parse_args()
+
+
 if __name__ == '__main__':
-    sample_input = "Lions 3, Snakes 0|Tarantulas 3, FC Awesome 0|Lions 1, FC Awesome 1|Tarantulas 3, Snakes 0|Lions 3, Grouches 0"
-    games = sample_input.split("|")
+    args = _cmd_args()
+    games = get_input(from_file=args.fileinput, from_stdin=args.cmdinput)
     teams = defaultdict(int)
     for game in games:
         for team in match_result(game):
             teams[team.name] += team.points
+
+    rankings = league_rankings(teams)
+    write_output(output=rankings, to_file=args.fileoutput, to_stdout=args.cmdoutput)
+
+    # sample input
+    # "Lions 3, Snakes 0|Tarantulas 3, FC Awesome 0|Lions 1, FC Awesome 1|Tarantulas 3, Snakes 0|Lions 3, Grouches 0"
+
+    # sample output
     # 1. Lions, 7 pts
     # 2. Tarantulas, 6 pts
     # 3. FC Awesome, 1 pt
     # 4. Grouches, 0 pts
     # 4. Snakes, 0 pts
-    standings = league_rankings(teams)
-    print(standings)
-
