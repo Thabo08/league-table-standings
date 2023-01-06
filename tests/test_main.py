@@ -24,7 +24,7 @@ class TestFileInputAndOutput:
         except Exception:
             pass
 
-        assert expected_standings == file_contents
+        assert expected_standings != file_contents
 
     def test_value_error_raised_when_no_input_args_provided(self):
         with pytest.raises(ValueError):

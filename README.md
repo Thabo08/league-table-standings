@@ -1,3 +1,4 @@
+[![build](https://github.com/Thabo08/league-table-standings/actions/workflows/main.yaml/badge.svg)](https://github.com/Thabo08/league-table-standings/actions/workflows/main.yaml)
 # League Table Standings
 
 This app calculates league table standings based on the results of the game between two teams. The rankings
