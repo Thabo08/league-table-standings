@@ -28,7 +28,9 @@ Team = namedtuple("Team", "name points")
 def _individual_result(team_result: str) -> dict[str, int]:
     team_result = team_result.strip()  # remove any leading or trailing spaces
     if len(team_result.split(" ")) < 2:
-        raise ValueError(f"{team_result} is of invalid format. Expected format is: 'Team1 3'")
+        raise ValueError(
+            f"{team_result} is of invalid format. Expected format is: 'Team1 3'"
+        )
 
     last_index_of_space = team_result.rindex(" ")
     team_name = team_result[:last_index_of_space]
@@ -55,40 +57,44 @@ def _points_allocator(team_1_goals: int, team_2_goals: int) -> Tuple[int, int]:
 
 
 def match_points(game_result: Any) -> Tuple[Team, Team]:
-    """ Takes a game result and returns teams with points based on the result.
+    """Takes a game result and returns teams with points based on the result.
 
-        e.g For result 'Lions 4, Grouches 0', Team(Lions, 3), Team(Grouches, 0)
-        will be returned as Lions beat the Grouches
+    e.g For result 'Lions 4, Grouches 0', Team(Lions, 3), Team(Grouches, 0)
+    will be returned as Lions beat the Grouches
 
-        Args:
-            game_result: game result in string format, eg, 'Lions 4, Grouches 0'
+    Args:
+        game_result: game result in string format, eg, 'Lions 4, Grouches 0'
 
-        Returns:
-            Tuple of Team objects with points based on the game results
+    Returns:
+        Tuple of Team objects with points based on the game results
     """
     if game_result is None or game_result == "":
         raise ValueError("Invalid input. Value cannot be None or empty")
 
     match = game_result.split(",")
     if len(match) != 2:
-        raise ValueError(f"{game_result} format is invalid. Expected format is: 'Team1 3, Team2 0'")
+        raise ValueError(
+            f"{game_result} format is invalid. Expected format is: 'Team1 3, Team2 0'"
+        )
 
     team_1_result, team_2_result = match
     team_1 = _individual_result(team_1_result)
     team_2 = _individual_result(team_2_result)
     team_1_goals, team_2_goals = team_1.get("goals"), team_2.get("goals")
     team_1_points, team_2_points = _points_allocator(team_1_goals, team_2_goals)
-    return Team(team_1.get("name"), team_1_points), Team(team_2.get("name"), team_2_points)
+    return Team(team_1.get("name"), team_1_points), Team(
+        team_2.get("name"), team_2_points
+    )
 
 
 def league_rankings(teams_with_points: dict) -> str:
-    """ Ranks all the teams based on their accumulated points
+    """Ranks all the teams based on their accumulated points
 
-        Args:
-            teams_with_points: A dict of teams with their total accumulated points
+    Args:
+        teams_with_points: A dict of teams with their total accumulated points
 
-        Returns:
-            League table standings in string format
+    Returns:
+        League table standings in string format
     """
     if not teams_with_points:
         raise ValueError("No teams with points found")
@@ -114,12 +120,12 @@ def league_rankings(teams_with_points: dict) -> str:
 
 
 def teams_with_points(games: List[str]) -> dict:
-    """ Sums up all points attained by each team
+    """Sums up all points attained by each team
 
-        Args:
-            games: The list of all games
-        Return:
-            A dict of teams with their total accumulated points
+    Args:
+        games: The list of all games
+    Return:
+        A dict of teams with their total accumulated points
     """
     teams = defaultdict(int)
     for game in games:

@@ -37,7 +37,6 @@ class TestRankManager:
 
 
 class TestInputValidation:
-
     def test_exception_raised_when_input_is_none(self):
         with pytest.raises(ValueError):
             match_points(None)
@@ -50,7 +49,9 @@ class TestInputValidation:
         with pytest.raises(ValueError):
             match_points("Team1 3")
 
-    def test_value_error_raised_when_input_format_is_invalid_for_individual_team_result(self):
+    def test_value_error_raised_when_input_format_is_invalid_for_individual_team_result(
+        self,
+    ):
         with pytest.raises(ValueError):
             match_points("Team1 3, Team2")
 
@@ -68,9 +69,11 @@ class TestInputValidation:
 
 class TestRankings:
     def test_correct_rankings_returned_when_teams_have_points(self):
-        teams = {'Bears': 7, 'Cats': 0, 'Dogs': 6, 'Cows': 1, 'Birds': 0}
-        expected_standings = "1. Bears, 7 pts\n2. Dogs, 6 pts\n" \
-                             "3. Cows, 1 pt\n4. Birds, 0 pts\n4. Cats, 0 pts"
+        teams = {"Bears": 7, "Cats": 0, "Dogs": 6, "Cows": 1, "Birds": 0}
+        expected_standings = (
+            "1. Bears, 7 pts\n2. Dogs, 6 pts\n"
+            "3. Cows, 1 pt\n4. Birds, 0 pts\n4. Cats, 0 pts"
+        )
         actual_standings = league_rankings(teams)
         assert expected_standings == actual_standings
 
@@ -80,6 +83,8 @@ class TestRankings:
         teams = teams_with_points(games)
         actual_rankings = league_rankings(teams)
 
-        expected_rankings = "1. Tarantulas, 6 pts\n2. Lions, 5 pts\n3. FC Awesome, 1 pt\n" \
-                            "3. Snakes, 1 pt\n5. Grouches, 0 pts"
+        expected_rankings = (
+            "1. Tarantulas, 6 pts\n2. Lions, 5 pts\n3. FC Awesome, 1 pt\n"
+            "3. Snakes, 1 pt\n5. Grouches, 0 pts"
+        )
         assert actual_rankings == expected_rankings
